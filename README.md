@@ -234,3 +234,4 @@ grunt.initConfig({
 ## Release History
 
  * 2014-11-29   v1.0.0   Initial release
+ * 2014-11-29   v1.1.x   Fixed bug where running more than once would corrupt json. Added ignore option
