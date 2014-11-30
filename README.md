@@ -114,12 +114,92 @@ grunt.initConfig({
       options: {
         manifests: {
           bower: "bower.json",
-          
+          chromeExtension: {
+            description: "A Chrome extension that allows you to foo bazz"
+          }
         }
       }
     }
   }
-})
+});
 ```
+
+#### Custom Primary Manifest Path
+In this example a custom `options.primaryManifest` file is specified via its path
+```js
+grunt.initConfig({
+  manifestSync: {
+    dist: {
+      options: {
+        primaryManifest: "distManifest.json",
+        manifests: {
+          bower: "bower.json",
+          chromeExtension: {
+            description: "A Chrome extension that allows you to foo bazz"
+          }
+        }
+      }
+    }
+  }
+});
+```
+and in `distManifest.json`
+```json
+{
+  "name": "Foo Bazz!",
+  "description": "The best description",
+  "version": "1.0.0-dist"
+}
+```
+
+#### Custom Primary Manifest Object
+In this example a custom `options.primaryManifest` file is specified via an object
+```js
+grunt.initConfig({
+  manifestSync: {
+    dist: {
+      options: {
+        primaryManifest: {
+          name: "Foo Bazz!",
+          description: "The best description",
+          version: "1.0.0-dist"
+        },
+        manifests: {
+          bower: "bower.json",
+          chromeExtension: {
+            description: "A Chrome extension that allows you to foo bazz"
+          }
+        }
+      }
+    }
+  }
+});
+```
+
+#### Custom Sync Manifest Fields
+In this example custom sync fields are specified
+```js
+grunt.initConfig({
+  manifestSync: {
+    dist: {
+      options: {
+        syncManifestFields: ["name", "flavor"]
+        primaryManifest: {
+          name: "Foo Bazz!",
+          flavor: "dist"
+        },
+        manifests: {
+          bower: "bower.json",
+          chromeExtension: {
+            flavor: "dist-chrome"
+          }
+        }
+      }
+    }
+  }
+});
+```
+
 ## Release History
-_(Nothing yet)_
+
+ * 2014-11-29   v1.0.0   Initial release
