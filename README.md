@@ -72,7 +72,38 @@ manifestSync: {
 This example configuration will sync the `bower.json` file and the `extension/manifest.json` file  
 
 ***Complex object***  
-The complex object option is for more complected manifests. Its purpose is to add or override manifest specific fields. You must specify a `dest` field in the complex object to specify were to write the manifest too. If you need to use a field named `dest` in your custom manifest then use the field `_dest` instead. The rest of the fields can be custom fields for your manifest.
+The complex object option is for more complected manifests. Its purpose is to add or override manifest specific fields.
+> **Fields**
+> ###dest
+> Optional: `False`  
+> Type: `String`  
+> Default value: `None`  
+>
+> Specifies were to write the manifest to. If your complex object needs to use the `dest` field then use the `_dest` field instead
+>  
+> ###ignore
+> Optional: `True`  
+> Type: `Array of Strings`  
+> Default value: `[]`
+>
+> Specifies fields to ignore. For example if you would like to ignore the `version` field completely simply add the `version` field to the `ignore` field. If your complex object needs to use the `ignore` field use the `_ignore` field instead.
+> ```js
+> manifestSync: {
+>   dist: {
+>     options: {
+>       manifests: {
+>         bower: "bower.json",
+>         chromeExtension: {
+>           dest: "extension/manifest.json",
+>           ignore: ["version"]
+>         }
+>       }
+>     }
+>   }
+> }
+> ```
+
+ <!--You must specify a `dest` field in the complex object to specify were to write the manifest too. If you need to use a field named `dest` in your custom manifest then use the field `_dest` instead. -->The rest of the fields can be custom fields for your manifest.
 ```js
 manifestSync: {
   dist: {

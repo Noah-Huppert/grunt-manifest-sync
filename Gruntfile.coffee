@@ -22,6 +22,7 @@ gruntConfig = (grunt) ->
               description: "description!!"
               version: "0.0.1!!"
             manifests:
+              foo: "foo.json"
               bower:
                 _dest: "bower.json"
                 dest: "bower.json"

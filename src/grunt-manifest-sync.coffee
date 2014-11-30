@@ -6,10 +6,13 @@ gruntManifestSync = (grunt) ->
       syncManifestFields: ["name", "description", "version"]
       manifests: {}
 
+    primaryManifestPath = ""
+
     loadPrimaryManifestData = (grunt)->
       #If file path was given, read file and store as object
       if typeof options.primaryManifest is "string"
         if grunt.file.exists options.primaryManifest
+          primaryManifestPath = options.primaryManifest
           options.primaryManifest = grunt.file.readJSON options.primaryManifest
         else
           grunt.fail.warn "The primaryManifest file \"#{options.primaryManifest}\" does not exist"
@@ -34,6 +37,8 @@ gruntManifestSync = (grunt) ->
         data = {}
 
         if typeof manifest is "object"
+          manifestIgnore = []
+
           if !manifest.dest? and !manifest._dest?
             grunt.fail.warn "Manifest object must have field \"dest\" or \"_dest\""
 
@@ -44,17 +49,29 @@ gruntManifestSync = (grunt) ->
             dest = manifest.dest
             delete manifest.dest
 
+          #Get optional fields
+          if manifest._ignore?
+            manifestIgnore = manifest._ignore
+            delete manifest._ignore
+          else if manifest.ignore?
+            manifestIgnore = manifest.ignore
+            delete manifest.ignore
+
           data = manifest
 
           for manifestField in options.syncManifestFields
             data[manifestField] = options.primaryManifest[manifestField] if !data[manifestField]?
+
+          #Ignore fields
+          for manifestIgnoreField in manifestIgnore
+            delete data[manifestIgnoreField]
         else
           dest = manifest
 
           if !grunt.file.exists dest
             grunt.log.warn "The manifest file \"#{dest}\" does not exist, creating \"#{dest}\""
           else
-            data = grunt.file.read dest
+            data = grunt.file.readJSON dest
 
           for manifestField in options.syncManifestFields
             data[manifestField] = options.primaryManifest[manifestField]

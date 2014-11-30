@@ -3,16 +3,18 @@
 
   gruntManifestSync = function(grunt) {
     return grunt.registerMultiTask("manifestSync", "A Grunt plugin for syncing common informatiom across many Json manifest files", function() {
-      var loadPrimaryManifestData, options, syncManifests;
+      var loadPrimaryManifestData, options, primaryManifestPath, syncManifests;
       options = this.options({
         primaryManifest: "package.json",
         syncManifestFields: ["name", "description", "version"],
         manifests: {}
       });
+      primaryManifestPath = "";
       loadPrimaryManifestData = function(grunt) {
         var manifestField, onlySyncManifestFieldsData, _i, _j, _len, _len1, _ref, _ref1;
         if (typeof options.primaryManifest === "string") {
           if (grunt.file.exists(options.primaryManifest)) {
+            primaryManifestPath = options.primaryManifest;
             options.primaryManifest = grunt.file.readJSON(options.primaryManifest);
           } else {
             grunt.fail.warn("The primaryManifest file \"" + options.primaryManifest + "\" does not exist");
@@ -34,7 +36,7 @@
         return options.primaryManifest = onlySyncManifestFieldsData;
       };
       syncManifests = function(grunt) {
-        var data, dest, key, manifest, manifestField, _i, _j, _len, _len1, _ref, _ref1, _ref2, _results;
+        var data, dest, key, manifest, manifestField, manifestIgnore, manifestIgnoreField, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
         _ref = options.manifests;
         _results = [];
         for (key in _ref) {
@@ -42,6 +44,7 @@
           dest = "";
           data = {};
           if (typeof manifest === "object") {
+            manifestIgnore = [];
             if ((manifest.dest == null) && (manifest._dest == null)) {
               grunt.fail.warn("Manifest object must have field \"dest\" or \"_dest\"");
             }
@@ -52,6 +55,13 @@
               dest = manifest.dest;
               delete manifest.dest;
             }
+            if (manifest._ignore != null) {
+              manifestIgnore = manifest._ignore;
+              delete manifest._ignore;
+            } else if (manifest.ignore != null) {
+              manifestIgnore = manifest.ignore;
+              delete manifest.ignore;
+            }
             data = manifest;
             _ref1 = options.syncManifestFields;
             for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
@@ -60,16 +70,20 @@
                 data[manifestField] = options.primaryManifest[manifestField];
               }
             }
+            for (_j = 0, _len1 = manifestIgnore.length; _j < _len1; _j++) {
+              manifestIgnoreField = manifestIgnore[_j];
+              delete data[manifestIgnoreField];
+            }
           } else {
             dest = manifest;
             if (!grunt.file.exists(dest)) {
               grunt.log.warn("The manifest file \"" + dest + "\" does not exist, creating \"" + dest + "\"");
             } else {
-              data = grunt.file.read(dest);
+              data = grunt.file.readJSON(dest);
             }
             _ref2 = options.syncManifestFields;
-            for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-              manifestField = _ref2[_j];
+            for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+              manifestField = _ref2[_k];
               data[manifestField] = options.primaryManifest[manifestField];
             }
           }

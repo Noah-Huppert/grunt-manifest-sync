@@ -1,10 +1,13 @@
 {
   "name": "grunt-manifest-sync",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Grunt plugin for syncing common informatiom across many Json manifest files",
   "main": "tasks/grunt-manifest-sync.js",
   "scripts": {
     "test": "echo \"Not implemented\""
+  },
+  "engines": {
+    "node": ">= 0.8.0"
   },
   "repository": {
     "type": "git",
@@ -13,8 +16,17 @@
   "keywords": [
     "gruntplugin"
   ],
-  "author": "Noah Huppert",
-  "license": "MIT",
+  "author": {
+    "name": "Noah Huppert",
+    "email": "noah.programmer@gmail.com",
+    "url": "https://github.com/Noah-Huppert"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/Noah-Huppert/grunt-manifest-sync/blob/master/LICENSE"
+    }
+  ],
   "bugs": {
     "url": "https://github.com/Noah-Huppert/grunt-manifest-sync/issues"
   },
@@ -24,5 +36,8 @@
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-coffee": "^0.12.0",
     "grunt-contrib-watch": "^0.6.1"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.5"
   }
 }
