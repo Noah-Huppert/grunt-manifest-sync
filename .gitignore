@@ -1,2 +1,5 @@
 #Npm packages
 node_modules
+
+#Json tests
+tests

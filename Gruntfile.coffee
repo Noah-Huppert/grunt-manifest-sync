@@ -17,14 +17,12 @@ gruntConfig = (grunt) ->
     manifestSync:
       main:
         options:
-            primaryManifest:
-              name: "name!!"
-              description: "description!!"
-              version: "0.0.1!!"
+            primaryManifest: "package.json"
             manifests:
-              foo: "foo.json"
+              _import: ["tests/manifests.json"]
+              foo: "tests/foo.json"
               bower:
-                _dest: "bower.json"
+                _dest: "tests/bower.json"
                 dest: "bower.json"
 
     #Watch for file changes

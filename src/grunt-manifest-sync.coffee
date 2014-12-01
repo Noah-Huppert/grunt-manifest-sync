@@ -31,6 +31,42 @@ gruntManifestSync = (grunt) ->
       options.primaryManifest = onlySyncManifestFieldsData
     #end
 
+    loadManifests = (grunt) ->
+      extend = require "extend"
+      importManifestsSrc = []
+
+      #Get import field
+      if options.manifests._import?
+        importManifestsSrc = options.manifests._import
+        delete options.manifests._import
+      else if options.manifests.import?
+        importManifestsSrc = options.manifests.import
+        delete options.manifests.import
+
+      if primaryManifestPath.length > 0 and importManifestsSrc.indexOf("FLAG_NO_PRIMARY_MANIFEST") == -1
+        importManifestsSrc.push primaryManifestPath
+
+      if importManifestsSrc.indexOf("FLAG_NO_PRIMARY_MANIFEST") >= 0
+        importManifestsSrc.splice(importManifestsSrc.indexOf("FLAG_NO_PRIMARY_MANIFEST"), 1)
+
+      #Convert to array if only string
+      if typeof importManifestsSrc is "string"
+        importManifestsSrc = [importManifestsSrc]
+
+      for manifestSrc in importManifestsSrc
+        if grunt.file.exists manifestSrc
+          manifest = grunt.file.readJSON manifestSrc
+          if !manifest.manifests?
+            if manifestSrc != primaryManifestPath
+              grunt.fail.warn "The Json file \"#{manifestSrc}\" must have the key \"manifests\""
+            else
+              return
+
+          options.manifests = extend options.manifests, manifest.manifests
+        else
+          grunt.fail.warn "The file \"#{manifestSrc}\" does not exist"
+
+
     syncManifests = (grunt) ->
       for key, manifest of options.manifests
         dest = ""
@@ -79,6 +115,7 @@ gruntManifestSync = (grunt) ->
         grunt.file.write dest, JSON.stringify data, null, 2
 
     loadPrimaryManifestData grunt
+    loadManifests grunt
     syncManifests grunt
 
 module.exports = gruntManifestSync

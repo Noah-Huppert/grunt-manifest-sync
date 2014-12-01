@@ -3,7 +3,7 @@
 
   gruntManifestSync = function(grunt) {
     return grunt.registerMultiTask("manifestSync", "A Grunt plugin for syncing common informatiom across many Json manifest files", function() {
-      var loadPrimaryManifestData, options, primaryManifestPath, syncManifests;
+      var loadManifests, loadPrimaryManifestData, options, primaryManifestPath, syncManifests;
       options = this.options({
         primaryManifest: "package.json",
         syncManifestFields: ["name", "description", "version"],
@@ -34,6 +34,43 @@
           onlySyncManifestFieldsData[manifestField] = options.primaryManifest[manifestField];
         }
         return options.primaryManifest = onlySyncManifestFieldsData;
+      };
+      loadManifests = function(grunt) {
+        var extend, importManifestsSrc, manifest, manifestSrc, _i, _len;
+        extend = require("extend");
+        importManifestsSrc = [];
+        if (options.manifests._import != null) {
+          importManifestsSrc = options.manifests._import;
+          delete options.manifests._import;
+        } else if (options.manifests["import"] != null) {
+          importManifestsSrc = options.manifests["import"];
+          delete options.manifests["import"];
+        }
+        if (primaryManifestPath.length > 0 && importManifestsSrc.indexOf("FLAG_NO_PRIMARY_MANIFEST") === -1) {
+          importManifestsSrc.push(primaryManifestPath);
+        }
+        if (importManifestsSrc.indexOf("FLAG_NO_PRIMARY_MANIFEST") >= 0) {
+          importManifestsSrc.splice(importManifestsSrc.indexOf("FLAG_NO_PRIMARY_MANIFEST"), 1);
+        }
+        if (typeof importManifestsSrc === "string") {
+          importManifestsSrc = [importManifestsSrc];
+        }
+        for (_i = 0, _len = importManifestsSrc.length; _i < _len; _i++) {
+          manifestSrc = importManifestsSrc[_i];
+          if (grunt.file.exists(manifestSrc)) {
+            manifest = grunt.file.readJSON(manifestSrc);
+            if (manifest.manifests == null) {
+              if (manifestSrc !== primaryManifestPath) {
+                grunt.fail.warn("The Json file \"" + manifestSrc + "\" must have the key \"manifests\"");
+              } else {
+                return;
+              }
+            }
+            options.manifests = extend(options.manifests, manifest.manifests);
+          } else {
+            grunt.fail.warn("The file \"" + manifestSrc + "\" does not exist");
+          }
+        }
       };
       syncManifests = function(grunt) {
         var data, dest, key, manifest, manifestField, manifestIgnore, manifestIgnoreField, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref2, _results;
@@ -92,6 +129,7 @@
         return _results;
       };
       loadPrimaryManifestData(grunt);
+      loadManifests(grunt);
       return syncManifests(grunt);
     });
   };

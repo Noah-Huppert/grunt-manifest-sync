@@ -47,13 +47,41 @@ The primary manifest to sync all other manifests to. If `options.primaryManifest
 Type: `Array of Strings`  
 Default value: `["name", "description", "version"]`  
 
-The `Json` fields to sync from `options.primaryManifest`. The purpose of this field is to sync on the fields that are needed. This way if you have your `Npm` `package.json` as the `options.primaryManifest` the `manfiestSync` task will only sync the specified fields instead of the 20 other unwanted fields.
+The `Json` fields to sync from `options.primaryManifest`. The purpose of this field is to sync only the fields that are needed. This way if you have your `Npm` `package.json` as the `options.primaryManifest` the `manfiestSync` task will only sync the specified fields instead of the 20 other unwanted fields.
 
 #### options.manifests
 Type: `Object`  
 Default value: `{}`  
 
-The `options.manifests` field is used to specify the `Json` manifests files to sync from the `options.primaryManifest`. The values of `options.manifests` can be either/or a simple key value pair or a complex object
+The `options.manifests` field is used to specify the `Json` manifests files to sync from the `options.primaryManifest`. The values of `options.manifests` can be either/or a simple key value pair or a complex object.  
+
+In addition to simple key value pairs and complex objects an `import` field can be used to specify `Json` file(s) to import manifest options from. If your manifests need to use the `import` field then use the `_import` field instead. These `Json` files must have a field in them called `manifests`. The value of `manifests` will be merged with the other `options.manifests` objects(`options.manifests` objects have priorty). By default the `manifestSync` task will search your `options.primaryManifest` file for a `manifests` field as well. If you would like to opt out of this feature make one of your import paths `FLAG_NO_PRIMARY_MANIFEST`  
+**Gruntfile.js**  
+```js
+manifestSync: {
+  dist: {
+    options: {
+      manifests: {
+        import: "manifests.json",
+        bower: "bower.json",
+        chromeExtension: "extension/manifest.json"
+      }
+    }
+  }
+}
+```
+**manifests.json**  
+```json
+{
+  "manifests": {
+    "foo": "foo.json",
+    "bazz": {
+      "dest": "bazz/bazzManifest.json",
+      "name": "Bazz!"
+    }
+  }
+}
+```
 
 ***Simple Key Value Pair***  
 The simple key value pair simply specifies the file path of a `Json` manifest to sync. The `manifestSync` task will automatically detect if a file exists and create the file if it does not exist, or only override the `options.syncManifestFields` fields if it exists.
@@ -234,4 +262,5 @@ grunt.initConfig({
 ## Release History
 
  * 2014-11-29   v1.0.0   Initial release
- * 2014-11-29   v1.1.x   Fixed bug where running more than once would corrupt json. Added ignore option
+ * 2014-11-29   v1.1.x   Bug fixes. Added `ignore` field
+ * 2014-11-30   v1.2.0   Added `import` field
