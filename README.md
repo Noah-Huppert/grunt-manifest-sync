@@ -261,6 +261,6 @@ grunt.initConfig({
 
 ## Release History
 
- * 2014-11-29   v1.0.0   Initial release
+ * 2014-11-30   v1.2.x   Added `import` field
  * 2014-11-29   v1.1.x   Bug fixes. Added `ignore` field
- * 2014-11-30   v1.2.0   Added `import` field
+ * 2014-11-29   v1.0.0   Initial release

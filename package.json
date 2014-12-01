@@ -1,6 +1,6 @@
 {
   "name": "grunt-manifest-sync",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A Grunt plugin for syncing common informatiom across many Json manifest files",
   "main": "tasks/grunt-manifest-sync.js",
   "scripts": {
@@ -35,10 +35,12 @@
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "^0.6.0",
     "grunt-contrib-coffee": "^0.12.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "extend": "^2.0.0"
+    "grunt-contrib-watch": "^0.6.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.5"
+  },
+  "dependencies": {
+    "extend": "^2.0.0"
   }
 }
