@@ -1,3 +1,4 @@
+Project Status: Complete | Maintaining 
 # grunt-manifest-sync
 
 > A Grunt plugin for syncing common informatiom across many Json manifest files
